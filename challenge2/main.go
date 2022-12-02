@@ -24,6 +24,9 @@ const (
 	cYouRock     string = "X"
 	cYouPaper    string = "Y"
 	cYouScissors string = "Z"
+	cYouLose     string = "X"
+	cYouDraw     string = "Y"
+	cYouWin      string = "Z"
 )
 
 func main() {
@@ -44,7 +47,39 @@ func main() {
 		}
 
 		op := parts[0]
-		you := parts[1]
+		out := parts[1]
+
+		// determine your choice based on needed outcome
+		you := ""
+		switch out {
+		case cYouLose:
+			switch op {
+			case cOppRock:
+				you = cYouScissors
+			case cOppPaper:
+				you = cYouRock
+			case cOppScissors:
+				you = cYouPaper
+			}
+		case cYouDraw:
+			switch op {
+			case cOppRock:
+				you = cYouRock
+			case cOppPaper:
+				you = cYouPaper
+			case cOppScissors:
+				you = cYouScissors
+			}
+		case cYouWin:
+			switch op {
+			case cOppRock:
+				you = cYouPaper
+			case cOppPaper:
+				you = cYouScissors
+			case cOppScissors:
+				you = cYouRock
+			}
+		}
 
 		// score for your selection
 		switch you {
