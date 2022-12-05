@@ -27,9 +27,6 @@ func main() {
 		if mode == 0 { // if in stacking mode
 			if line == "" { // switch to moving mode
 				mode = 1
-				for _, s := range stacks {
-					s.Print()
-				}
 				continue
 			}
 
@@ -79,14 +76,20 @@ func main() {
 			// move
 			f := stacks[from-1]
 			t := stacks[to-1]
-			for i := 0; i < amount; i++ {
-				if f.Size() > 0 {
-					r := f.Pop()
-					t.Put(r)
-				} else {
-					break
-				}
+			if amount > f.Size() {
+				amount = f.Size()
 			}
+			rs := f.PopMany(amount)
+			t.PutMany(rs)
+
+			//for i := 0; i < amount; i++ {
+			//	if f.Size() > 0 {
+			//		r := f.Pop()
+			//		t.Put(r)
+			//	} else {
+			//		break
+			//	}
+			//}
 		}
 	}
 
@@ -128,6 +131,10 @@ func (s *Stack) Put(r rune) {
 	s.vals = append(s.vals, r)
 }
 
+func (s *Stack) PutMany(rs []rune) {
+	s.vals = append(s.vals, rs...)
+}
+
 func (s *Stack) PutBottom(r rune) {
 	s.vals = append([]rune{r}, s.vals...)
 }
@@ -136,6 +143,12 @@ func (s *Stack) Pop() rune {
 	r := s.vals[s.Size()-1]
 	s.vals = s.vals[:s.Size()-1]
 	return r
+}
+
+func (s *Stack) PopMany(c int) []rune {
+	runes := s.vals[s.Size()-c:]
+	s.vals = s.vals[:s.Size()-c]
+	return runes
 }
 
 func (s *Stack) Size() int {
