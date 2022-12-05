@@ -51,11 +51,16 @@ func main() {
 			log.Fatalln("could not parse as int")
 		}
 
-		// check if one contains the other
-		if (x0 <= y0 && x1 >= y1) || (y0 <= x0 && y1 >= x1) {
+		//// check if one contains the other
+		//if (x0 <= y0 && x1 >= y1) || (y0 <= x0 && y1 >= x1) {
+		//	contained++
+		//}
+
+		// check if there is overlap
+		if (x0 >= y0 && x0 <= y1) || (x1 >= y0 && x1 <= y1) || (y0 >= x0 && y0 <= x1) || (y1 >= x0 && y1 <= x1) {
 			contained++
 		}
 	}
 
-	fmt.Printf("There are %v assignements that contain eachother.\n", contained)
+	fmt.Printf("There are %v assignements that overlap eachother.\n", contained)
 }
