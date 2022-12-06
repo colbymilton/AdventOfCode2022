@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-const cMaxSize = 4
+const cMaxSize = 14
 
 func main() {
 	// load in file
@@ -28,7 +28,7 @@ func main() {
 		lastChar++
 
 		if chars[0] != 0 {
-			// check if 4 are unique
+			// check if they are all unique
 			unique := true
 		L:
 			for i, c := range chars {
