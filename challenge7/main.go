@@ -21,6 +21,11 @@ const (
 	cDir     string = "dir"
 )
 
+const (
+	cMaxSysMem int = 70000000
+	cUpdateMem int = 30000000
+)
+
 type Dir struct {
 	name   string
 	files  map[string]int  // filename to size
@@ -99,7 +104,7 @@ func main() {
 						log.Fatalln("cannot go above root dir")
 					}
 					d = d.parent
-				} else {                             // going down
+				} else { // going down
 					if _, ok := d.dirs[newdir]; ok { // dir exists
 						d = d.dirs[newdir]
 					} else { // dir does not exist
@@ -132,8 +137,24 @@ func main() {
 		}
 	}
 
-	fmt.Println("Total size:", root.Size())
+	totalSize := root.Size()
+	fmt.Println("Total size:", totalSize)
 	fmt.Println("Total size of all directories with at most 100000:", totalSizeOfAtMost(root, 100000))
+
+	// decide which directory to delete
+	free := cMaxSysMem - totalSize
+	missing := cUpdateMem - free
+	fmt.Printf("We currently have %v free memory. \n", free)
+	fmt.Printf("We need to clear up %v memory. \n", missing)
+
+	bigger := biggerThan(root, missing)
+	smallest := bigger[0]
+	for _, dir := range bigger {
+		if dir.Size() < smallest.Size() {
+			smallest = dir
+		}
+	}
+	fmt.Printf("The smallest dir we can delete is %v at %v.\n", smallest.name, smallest.Size())
 }
 
 func totalSizeOfAtMost(d *Dir, maxSize int) int {
@@ -151,4 +172,18 @@ func totalSizeOfAtMost(d *Dir, maxSize int) int {
 	}
 
 	return sum
+}
+
+func biggerThan(d *Dir, targetSize int) []*Dir {
+	dirs := make([]*Dir, 0)
+	size := d.Size()
+	if size >= targetSize {
+		dirs = append(dirs, d)
+	}
+
+	for _, sd := range d.dirs {
+		dirs = append(dirs, biggerThan(sd, targetSize)...)
+	}
+
+	return dirs
 }
