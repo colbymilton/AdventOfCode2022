@@ -35,73 +35,62 @@ func main() {
 		trees = append(trees, row)
 	}
 
-	// check if tree is visible from any direction
+	// check scenic score
 	rows := len(trees)
 	cols := len(trees[0])
-	visCount := 0
+	highest := 0
 	for row, _ := range trees {
 		for col, _ := range trees {
 			height := trees[row][col]
 
-			// determine if visible
-			visible := true
+			up := 0
+			right := 0
+			down := 0
+			left := 0
 
 			// up
 			for j := row - 1; j >= 0; j-- {
+				up++
 				other := trees[j][col]
 				if other >= height {
-					visible = false
 					break
 				}
-			}
-			if visible {
-				visCount++
-				continue
 			}
 
 			// right
-			visible = true
 			for j := col + 1; j < cols; j++ {
+				right++
 				other := trees[row][j]
 				if other >= height {
-					visible = false
 					break
 				}
-			}
-			if visible {
-				visCount++
-				continue
 			}
 
 			// down
-			visible = true
 			for j := row + 1; j < rows; j++ {
+				down++
 				other := trees[j][col]
 				if other >= height {
-					visible = false
 					break
 				}
-			}
-			if visible {
-				visCount++
-				continue
 			}
 
 			// left
-			visible = true
 			for j := col - 1; j >= 0; j-- {
+				left++
 				other := trees[row][j]
 				if other >= height {
-					visible = false
 					break
 				}
 			}
-			if visible {
-				visCount++
-				continue
+
+			score := up * right * down * left
+			fmt.Println(up, right, down, left, score)
+			if score > highest {
+				highest = score
 			}
 		}
 	}
 
-	fmt.Printf("There are %v visible trees!\n", visCount)
+	fmt.Printf("There are highest scenic score is %v!\n", highest)
 }
